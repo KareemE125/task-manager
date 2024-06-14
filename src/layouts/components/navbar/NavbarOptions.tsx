@@ -1,45 +1,48 @@
 import { useEffect, useState } from "react";
 import { FaMoon, FaSun } from "react-icons/fa6";
+import { FaTasks } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { useAppSelector } from "@/store/store";
-import { APP_LOCAL_STORAGE_THEME_DARK_VALUE, APP_LOCAL_STORAGE_THEME_KEY, APP_LOCAL_STORAGE_THEME_LIGHT_VALUE } from "@/global/constants";
+import { STORAGE_THEME_DARK_VALUE, STORAGE_THEME_KEY, STORAGE_THEME_LIGHT_VALUE } from "@/global/constants";
+import useCacheApiCall from "@/hooks/useCacheApiCall";
+import { getTasks } from "@/store/taskSlice";
 import '@/styles/shared.css'
-import { FaTasks } from "react-icons/fa";
 
 export default function NavbarOptions({children}) {
-    const {list} = useAppSelector(state => state.task)
+  const {list, lastFetch} = useAppSelector(state => state.task)
+  const [darkTheme, setDarkTheme] = useState<boolean>(true)
+  const [bounceCartIcon, setBounceCartIcon] = useState<boolean>(false)
+  
+  useCacheApiCall(getTasks, lastFetch)
 
-    const [darkTheme, setDarkTheme] = useState<boolean>(true)
-    const [bounceCartIcon, setBounceCartIcon] = useState<boolean>(false)
-  
-    useEffect(() => {
-      const dark = localStorage.getItem(APP_LOCAL_STORAGE_THEME_KEY)
-      if (dark === APP_LOCAL_STORAGE_THEME_DARK_VALUE) {
-        setDarkTheme(true)
-      } else {
-        setDarkTheme(false)
-      }
-    }, [])
-  
-    useEffect(() => {
-      if (list.length === 0 ) return
-  
-      setBounceCartIcon(true)
-      const timeout = setTimeout(() => setBounceCartIcon(false), 300)
-  
-      return () => clearTimeout(timeout)
-    }, [list.length])
-  
-    const toggleTheme = () => {
-      if (darkTheme) {
-        document.documentElement.classList.remove(APP_LOCAL_STORAGE_THEME_DARK_VALUE)
-        localStorage.setItem(APP_LOCAL_STORAGE_THEME_KEY, APP_LOCAL_STORAGE_THEME_LIGHT_VALUE)
-      } else {
-        document.documentElement.classList.add(APP_LOCAL_STORAGE_THEME_DARK_VALUE)
-        localStorage.setItem(APP_LOCAL_STORAGE_THEME_KEY, APP_LOCAL_STORAGE_THEME_DARK_VALUE)
-      }
-      setDarkTheme(!darkTheme)
+  useEffect(() => {
+    const dark = localStorage.getItem(STORAGE_THEME_KEY)
+    if (dark === STORAGE_THEME_DARK_VALUE) {
+      setDarkTheme(true)
+    } else {
+      setDarkTheme(false)
     }
+  }, [])
+  
+  useEffect(() => {
+    if (list.length === 0 ) return
+
+    setBounceCartIcon(true)
+    const timeout = setTimeout(() => setBounceCartIcon(false), 300)
+
+    return () => clearTimeout(timeout)
+  }, [list.length])
+  
+  const toggleTheme = () => {
+    if (darkTheme) {
+      document.documentElement.classList.remove(STORAGE_THEME_DARK_VALUE)
+      localStorage.setItem(STORAGE_THEME_KEY, STORAGE_THEME_LIGHT_VALUE)
+    } else {
+      document.documentElement.classList.add(STORAGE_THEME_DARK_VALUE)
+      localStorage.setItem(STORAGE_THEME_KEY, STORAGE_THEME_DARK_VALUE)
+    }
+    setDarkTheme(!darkTheme)
+  }
 
   return (
     <div className="flex items-center gap-6">
