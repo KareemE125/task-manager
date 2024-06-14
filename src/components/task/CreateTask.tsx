@@ -24,8 +24,9 @@ export default function CreateTask() {
   const loading = useAppSelector((state) => state.task.loading)
   const dispatcher = useAppDispatch()
 
-  const onSubmit = (data: ITask) => {
+  const onSubmit =  (data: ITask, { resetForm }) => {
     dispatcher(createTask(data))
+    resetForm();
   }
 
   return (

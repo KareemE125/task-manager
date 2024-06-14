@@ -19,9 +19,9 @@ const validationSchema = Yup.object({
 
 export default function ContactPage() {
 
-  const onSubmit = (data: typeof initialData) => {
-    // Call the api here to send the message
+  const onSubmit = (data: typeof initialData, { resetForm }) => {
     console.log(data);
+    resetForm();
   }
 
   return (

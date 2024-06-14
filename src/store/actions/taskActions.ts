@@ -18,9 +18,7 @@ export const createTask = createAsyncThunk(
     "task/createTask",
     reduxActionAxiosWrapper<ITask>(async (task) => {
         if(!task) throw new Error("task is required")
-            // delay the response to simulate a real world scenario
         const response = await axios.post<ITask>(`${API_BASE_URL}/tasks`, task)
-        await new Promise((resolve) => setTimeout(resolve, 51000))
         return response.data
     })
 )
