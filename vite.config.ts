@@ -8,4 +8,15 @@ export default defineConfig({
     react(),
     tsconfigPaths()
   ],
+  build: {
+    outDir: 'dist',
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
+  },
+  server: {
+    port: 3000
+  },
 })
